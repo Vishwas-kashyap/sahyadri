@@ -1,0 +1,47 @@
+{
+  "incident_id": "INC-20261114-112222",
+  "incident_type": "prompt_injection",
+  "generated_at": "2026-11-14 11:22:29 UTC",
+  "final_status": "RESOLVED",
+  "severity": "SEV0 - CRITICAL IMPACT",
+  "runbook_referenced": "prompt_injection_suspected.md",
+  "active_duration_seconds": 7,
+  "estimated_financial_loss": "$316",
+  "forensics_status": "CAPTURED & QUARANTINED",
+  "regulatory_disclosure_required": false,
+  "root_cause": "Adversarial indirect prompt injection in user input bypassed semantic guardrails, attempting unauthorized tool execution.",
+  "five_whys": [
+    "Why 1: Ingress guardrail failed -> Jailbreak pattern used base64-encoded system override.",
+    "Why 2: Agent attempted privileged tool -> Tool permission allow-list lacked dynamic role validation.",
+    "Why 3: Why was tool accessible? -> Agent pod possessed broad sandbox execution tokens.",
+    "Why 4: Why was it not caught in staging? -> Injection drill suite lacked base64 polyglot test cases.",
+    "Why 5: Why did kill switch succeed? -> 03. KILL_SWITCHES/disable_agent.sh cut credentials within 120 seconds."
+  ],
+  "actions_taken": [
+    {
+      "kill_switch": "disable_agent",
+      "args": {
+        "agent": "customer-support-agent"
+      },
+      "status": "executed",
+      "approved_by": "on-call AI Incident Commander",
+      "outcome": "Emergency Kill Switch 'disable_agent.sh' executed. Agent 'customer-support-agent' pulled offline; all tokens revoked."
+    }
+  ],
+  "jira_tickets": [
+    {
+      "key": "SEC-801",
+      "priority": "P0",
+      "component": "guardrail-engine",
+      "title": "Implement multi-layer input sanitizer with base64 decoding pass"
+    },
+    {
+      "key": "SEC-802",
+      "priority": "P1",
+      "component": "tool-sandbox",
+      "title": "Enforce per-role tool token binding with mutual TLS"
+    }
+  ],
+  "agent_steps": 5,
+  "engine": "SentinelOps AIR Commander (Blueprint Edition)"
+}

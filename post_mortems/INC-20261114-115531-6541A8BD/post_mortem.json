@@ -1,0 +1,50 @@
+{
+  "incident_id": "INC-20261114-115531-6541A8BD",
+  "incident_type": "hallucination_spike",
+  "generated_at": "2026-11-14 11:55:31 UTC",
+  "final_status": "RESOLVED",
+  "severity": "SEV2 - MODERATE IMPACT",
+  "revenue_at_risk_per_min": 800,
+  "affected_users": 2674,
+  "runbook_referenced": "hallucination_detected.md",
+  "active_duration_seconds": 0,
+  "estimated_financial_loss": "$0",
+  "forensics_status": "CAPTURED & QUARANTINED",
+  "regulatory_disclosure_required": false,
+  "root_cause": "Adversarial indirect prompt injection in user input bypassed semantic guardrails, attempting unauthorized tool execution.",
+  "five_whys": [
+    "Why 1: Ingress guardrail failed -> Jailbreak pattern used base64-encoded system override.",
+    "Why 2: Agent attempted privileged tool -> Tool permission allow-list lacked dynamic role validation.",
+    "Why 3: Why was tool accessible? -> Agent pod possessed broad sandbox execution tokens.",
+    "Why 4: Why was it not caught in staging? -> Injection drill suite lacked base64 polyglot test cases.",
+    "Why 5: Why did kill switch succeed? -> 03. KILL_SWITCHES/disable_agent.sh cut credentials within 120 seconds."
+  ],
+  "actions_taken": [
+    {
+      "kill_switch": "rollback_to_version",
+      "args": {
+        "agent": "customer-support-agent",
+        "version": "v1.0.0-stable"
+      },
+      "status": "executed",
+      "approved_by": "on-call AI Incident Commander",
+      "outcome": "Kill Switch 'rollback_to_version.sh' executed. Agent rolled back to verified stable checkpoint 'v1.0.0-stable'."
+    }
+  ],
+  "jira_tickets": [
+    {
+      "key": "SEC-801",
+      "priority": "P0",
+      "component": "guardrail-engine",
+      "title": "Implement multi-layer input sanitizer with base64 decoding pass"
+    },
+    {
+      "key": "SEC-802",
+      "priority": "P1",
+      "component": "tool-sandbox",
+      "title": "Enforce per-role tool token binding with mutual TLS"
+    }
+  ],
+  "agent_steps": 5,
+  "engine": "SentinelOps AIR Commander (Blueprint Edition)"
+}

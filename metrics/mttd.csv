@@ -1,0 +1,6 @@
+incident_id,timestamp,incident_type,severity,mttd_seconds,detected_by
+INC-20261101-001,2026-11-01T09:12:00,prompt_injection,SEV0,24,automated_guardrail
+INC-20261104-002,2026-11-04T14:35:00,cost_runaway,SEV1,65,budget_monitor
+INC-20261108-003,2026-11-08T18:22:00,tool_misuse,SEV0,18,sandbox_kernel
+INC-20261111-004,2026-11-11T11:05:00,drift_detected,SEV2,180,daily_benchmark_eval
+INC-20261113-005,2026-11-13T13:40:00,data_leak,SEV0,32,dlp_scanner
